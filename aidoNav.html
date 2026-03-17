@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aido Navbar</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f3f3f3;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            border: 3px solid #333;
+            border-radius: 30px;
+            padding: 15px 30px;
+            box-shadow: 6px 6px 0 #333;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-box {
+            width: 50px;
+            height: 50px;
+            background-color: #ff7a4d;
+            border-radius: 12px;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: gray;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .menu a.active {
+            color: #ff7a4d;
+        }
+
+        .lang {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 30px;
+        }
+
+        .lang-box {
+            display: flex;
+            border: 2px solid #333;
+            border-radius: 20px;
+            padding: 3px;
+            background-color: white;
+        }
+
+        .lang-box a {
+            text-decoration: none;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .lang-box a.active {
+            background-color: #ff7a4d;
+            color: white;
+        }
+
+        @media (max-width: 700px) {
+            .menu a {
+                display: none;
+        }
+}
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <div class="logo-box"></div>
+            <div class="logo-text">Aido</div>
+        </div>
+
+        <div style="display: flex; align-items: center;">
+            <div class="menu">
+                <a href="#" class="active">고양이 친구들</a>
+                <a href="#">패치 노트</a>
+                <a href="#">앱 다운로드</a>
+            </div>
+
+            <div class="lang">
+                <span>언어</span>
+                <div class="lang-box">
+                    <a href="#" class="active">KO</a>
+                    <a href="#">EN</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
