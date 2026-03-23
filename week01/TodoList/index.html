@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY TODO</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>MY TODO</h1>
+        </div>
+
+        <div class="inputTodo">
+            <input type="text" id="todoInput" placeholder="할 일 입력">
+            <button id="addBtn">할 일 추가</button>
+        </div>
+
+        <div class="listArea">
+            <div class="todoArea">
+                <h3>할 일</h3>
+                <ul id="todoList"></ul>
+            </div>
+
+            <div class="doneArea">
+                <h3>완료</h3>
+                <ul id="doneList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./dist/app.js"></script>
+</body>
+
+</html>
