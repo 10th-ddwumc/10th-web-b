@@ -1,6 +1,9 @@
 import TodoList from "./TodoList";
 import TodoForm from "./TodoForm";
 import { useTodo } from "../context/TodoContext";
+import { ThemeToggleButton } from "./ThemeToggleButton";
+import {THEME, useTheme} from '../context/ThemeProvider';
+import clsx from 'clsx';
 
 function Todo() {
     // 핵심 로직을 잘 분리시켜놓는 것이 중요
@@ -9,9 +12,14 @@ function Todo() {
     // const [todos, setTodos] = useState<TTodo[]>([]);
     // const [doneTodos, setDoneTodos] = useState<TTodo[]>([]);
     const { todos, completeTodo, deleteTodo, doneTodos } = useTodo();
-
+    const { theme, toggleTheme } = useTheme();
+    const isLightMode = theme === THEME.LIGHT;
 
     return (
+        <>
+        <div className={clsx(
+        'flex flex-col items-center justify-center min-h-screen w-full transition-colors duration-300')}>
+        <ThemeToggleButton/>
         <div className='todo-container'>
             <h1 className='todo-container__header'>SYOON TODO</h1>
             <TodoForm />
@@ -28,6 +36,8 @@ function Todo() {
                     onClick={deleteTodo} />
             </div>
         </div>
+        </div>
+        </>
     );
 }
 

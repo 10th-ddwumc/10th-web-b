@@ -1,3 +1,9 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ===== 기본 스타일 ===== */
 * {
     margin: 0;
@@ -7,17 +13,12 @@
 
 body {
     font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #eef2f3;
     margin: 0;
 }
 
 /* ===== Todo 컨테이너 ===== */
 .todo-container {
-  background: white;
+  /*background: white;*/
   width: 480px;
   padding: 30px;
   border-radius: 12px;
@@ -106,7 +107,7 @@ body {
 
   padding: 10px 10px;
   border-bottom: 1px solid #ddd;
-  background: #f9f9f9;
+  /* background: #f9f9f9;*/
   border-radius: 6px;
   margin-bottom: 6px;
   width: 100%; /* Make sure the item takes full available width */

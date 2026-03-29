@@ -1,4 +1,4 @@
-import React, { type FormEvent } from 'react'
+import { type FormEvent } from 'react'
 import { useState } from 'react';
 import { useTodo } from '../context/TodoContext';
 
@@ -20,7 +20,7 @@ const TodoForm = () => {
     }
 
     return (
-    <form onSubmit={handleSubmit} className="todo-container__form">
+        <form onSubmit={handleSubmit} className="todo-container__form">
             <input 
                 value={input} 
                 onChange={(e) => setInput(e.target.value)} 
