@@ -1,0 +1,8 @@
+.container { padding: 20px; font-family: sans-serif; }
+.render-container { display: flex; gap: 40px; margin-top: 20px; }
+.list-section { flex: 1; border: 1px solid #ddd; padding: 10px; border-radius: 8px; }
+.render-container__item { 
+  display: flex; justify-content: space-between; 
+  align-items: center; margin-bottom: 8px; list-style: none;
+}
+.render-container__item-button { color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
