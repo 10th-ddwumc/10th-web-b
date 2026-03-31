@@ -1,24 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import type { Movie } from '../types/movie';
-
-interface MovieDetail extends Movie {
-    runtime?: number;
-    tagline?: string;
-}
-
-interface CastMember {
-    id: number;
-    name: string;
-    character: string;
-    profile_path: string | null;
-}
-
-interface MovieCredits {
-    id: number;
-    cast: CastMember[];
-}
+import type { MovieDetail, MovieCredits } from '../types/movie';
 
 const MovieDetailPage = () => {
     const { movieId } = useParams<{ movieId: string }>();
