@@ -1,0 +1,120 @@
+@import 'tailwindcss';
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.layout {
+  padding: 24px;
+}
+
+.navBar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: gray;
+  font-weight: 500;
+}
+
+.nav-link.active {
+  color: #8bc98b;
+}
+
+.content {
+  min-height: 80vh;
+}
+
+.movies-page {
+  width: 100%;
+}
+
+.movie-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.movie-card {
+  text-align: center;
+}
+
+.movie-poster {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+.movie-poster.empty {
+  height: 300px;
+  background-color: #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.movie-title {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #d9d9d9;
+  border-top: 5px solid #9fd89f;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-text {
+  color: #ff5c5c;
+  font-size: 18px;
+  margin-top: 40px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.page-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #d9d9e6;
+  font-size: 18px;
+}
+
+.page-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.page-text {
+  font-size: 16px;
+  font-weight: 600;
+}
