@@ -1,4 +1,5 @@
-import './App.css';
+//src/App.tsx
+import "./App.css";
 import Todo from "./components/Todo";
 import { ThemeProvider } from "./context/ThemeProvider";
 import { TodoProvider } from "./context/TodoContext";
