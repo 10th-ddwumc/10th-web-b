@@ -1,15 +1,25 @@
+// src/App.tsx
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./App.css";
+import RootLayout from "./layouts/RootLayout";
 import HomePage from "./pages/HomePage";
-import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <RootLayout />, // 🔥 layout 적용
     errorElement: <NotFoundPage />,
-    children: [{path: 'login', element: <LoginPage />}],
+    children: [
+      {
+        index: true, // "/" 경로
+        element: <HomePage />,
+      },
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+    ],
   },
 ]);
 
