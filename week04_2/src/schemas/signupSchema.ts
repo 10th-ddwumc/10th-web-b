@@ -10,7 +10,7 @@ export const emailSchema = z.object({
 
 export const passwordSchema = z
   .object({
-    password: z.string().min(6, "비밀번호는 6자 이상이어야 합니다."),
+    password: z.string().min(8, "비밀번호는 8자 이상이어야 합니다."),
     passwordConfirm: z.string().min(1, "비밀번호를 다시 한 번 입력해주세요."),
   })
   .refine((data) => data.password === data.passwordConfirm, {

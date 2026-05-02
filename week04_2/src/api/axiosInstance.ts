@@ -13,7 +13,7 @@ interface RetryAxiosRequestConfig extends InternalAxiosRequestConfig {
 }
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "http://localhost:8000/v1",
   withCredentials: true,
 });
 
@@ -49,7 +49,7 @@ axiosInstance.interceptors.response.use(
         }
 
         const response = await axios.post(
-          "http://localhost:3000/auth/refresh",
+          "http://localhost:8000/v1/auth/refresh",
           { refreshToken }
         );
 
