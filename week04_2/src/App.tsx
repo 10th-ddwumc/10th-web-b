@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import MyPage from "./pages/MyPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import GoogleCallbackPage from "./pages/GoogleCallbackPage";
 import "./App.css";
 
 const router = createBrowserRouter([
@@ -18,10 +19,12 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
-      { element: <ProtectedRoute />,
-        children: [
-          { path: "mypage", element: <MyPage /> },
-        ],
+
+      { path: "v1/auth/google/callback", element: <GoogleCallbackPage /> },
+
+      {
+        element: <ProtectedRoute />,
+        children: [{ path: "mypage", element: <MyPage /> }],
       },
     ],
   },
