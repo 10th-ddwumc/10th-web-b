@@ -50,7 +50,7 @@ axiosInstance.interceptors.response.use(
 
         const response = await axios.post(
           "http://localhost:8000/v1/auth/refresh",
-          { refreshToken }
+          { refresh: refreshToken, }
         );
 
         const newAccessToken = response.data.accessToken;

@@ -16,20 +16,18 @@ export type SignupRequest = {
 export const login = async (data: LoginRequest) => {
   const response = await axiosInstance.post("/auth/signin", data);
 
+  const responseData = response.data.data;
+
   const accessToken =
-    response.data.accessToken ??
-    response.data.access_token ??
-    response.data.token ??
-    response.data.result?.accessToken ??
-    response.data.result?.access_token;
+    responseData.accessToken ??
+    responseData.access_token ??
+    responseData.accessTokenExpiresIn;
 
   const refreshToken =
-    response.data.refreshToken ??
-    response.data.refresh_token ??
-    response.data.result?.refreshToken ??
-    response.data.result?.refresh_token;
+    responseData.refreshToken ??
+    responseData.refresh_token;
 
-  if (accessToken) {
+  if (accessToken && refreshToken) {
     setTokens(accessToken, refreshToken);
   }
 
