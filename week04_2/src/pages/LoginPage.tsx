@@ -1,6 +1,7 @@
 // src/pages/LoginPage.tsx
 import { useNavigate } from "react-router-dom";
 import useForm from "../hooks/useForm";
+import { login } from "../api/auth";
 import "../styles/LoginPage.css";
 
 const LoginPage = () => {
@@ -12,12 +13,21 @@ const LoginPage = () => {
       password: "",
     });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!isValid) return;
 
-    console.log("로그인 정보:", values);
+    try {
+      const result = await login(values);
+
+      console.log("로그인 성공:", result);
+
+      navigate("/");
+    } catch (error) {
+      console.error("로그인 실패:", error);
+      alert("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
+    }
   };
 
   return (
