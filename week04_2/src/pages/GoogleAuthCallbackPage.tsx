@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { setTokens } from "../utils/token";
 
-const GoogleCallbackPage = () => {
+const GoogleAuthCallbackPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -25,4 +25,4 @@ const GoogleCallbackPage = () => {
   return <main>구글 로그인 처리 중...</main>;
 };
 
-export default GoogleCallbackPage;
+export default GoogleAuthCallbackPage;
