@@ -1,3 +1,4 @@
+//src/hooks/useCustomFetch.ts
 import { useQuery } from "@tanstack/react-query";
 
 export const useCustomFetch = <T>(url: string) => {
