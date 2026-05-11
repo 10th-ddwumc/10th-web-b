@@ -1,15 +1,29 @@
 // src/api/lp.ts
 import axiosInstance from "./axiosInstance";
-import type { LpDetailResponse, LpListResponse, SortType } from "../types/lp";
+import type {
+  LpCommentListResponse,
+  LpDetailResponse,
+  LpListResponse,
+  OrderType,
+  SortType,
+} from "../types/lp";
 
-export const getLpList = async (sort: SortType): Promise<LpListResponse> => {
+export const getLpList = async ({
+  sort,
+  cursor = 0,
+  limit = 12,
+}: {
+  sort: SortType;
+  cursor?: number;
+  limit?: number;
+}): Promise<LpListResponse> => {
   const order = sort === "latest" ? "desc" : "asc";
 
   const response = await axiosInstance.get("/lps", {
     params: {
       order,
-      limit: 50,
-      cursor: 0,
+      limit,
+      cursor,
     },
   });
 
@@ -20,6 +34,28 @@ export const getLpDetail = async (
   lpid: string
 ): Promise<LpDetailResponse> => {
   const response = await axiosInstance.get(`/lps/${lpid}`);
+  return response.data;
+};
+
+export const getLpComments = async ({
+  lpid,
+  order,
+  cursor = 0,
+  limit = 10,
+}: {
+  lpid: string;
+  order: OrderType;
+  cursor?: number;
+  limit?: number;
+}): Promise<LpCommentListResponse> => {
+  const response = await axiosInstance.get(`/lps/${lpid}/comments`, {
+    params: {
+      order,
+      cursor,
+      limit,
+    },
+  });
+
   return response.data;
 };
 

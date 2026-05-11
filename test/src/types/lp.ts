@@ -1,5 +1,6 @@
 // src/types/lp.ts
 export type SortType = "latest" | "oldest";
+export type OrderType = "asc" | "desc";
 
 export type LpTag = {
   id: number;
@@ -34,11 +35,34 @@ export type Lp = {
 export type LpListResponse = {
   data: {
     data: Lp[];
-    nextCursor: number;
+    nextCursor: number | null;
     hasNext: boolean;
   };
 };
 
 export type LpDetailResponse = {
   data: Lp;
+};
+
+export type LpCommentAuthor = {
+  id: number;
+  name: string;
+  avatar?: string;
+};
+
+export type LpComment = {
+  id: number;
+  content: string;
+  createdAt: string;
+  updatedAt?: string;
+  author?: LpCommentAuthor;
+  user?: LpCommentAuthor;
+};
+
+export type LpCommentListResponse = {
+  data: {
+    data: LpComment[];
+    nextCursor: number | null;
+    hasNext: boolean;
+  };
 };

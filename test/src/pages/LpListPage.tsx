@@ -3,15 +3,32 @@ import { useState } from "react";
 import LpCard from "../components/lp/LpCard";
 import LpCardSkeleton from "../components/lp/LpCardSkeleton";
 import LoadingError from "../components/common/LoadingError";
-import { useLpList } from "../hooks/useLpList";
+import { useInfiniteLpList } from "../hooks/useInfiniteLpList";
+import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import type { Lp, SortType } from "../types/lp";
 import "../styles/LpPage.css";
 
 const LpListPage = () => {
   const [sort, setSort] = useState<SortType>("latest");
-  const { data, isLoading, isError, refetch } = useLpList(sort);
 
-  const lpList = data?.data?.data ?? [];
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteLpList(sort);
+
+  const lpList = data?.pages.flatMap((page) => page.data.data) ?? [];
+
+  const observerRef = useIntersectionObserver({
+    enabled: !!hasNextPage && !isFetchingNextPage,
+    onIntersect: () => {
+      fetchNextPage();
+    },
+  });
 
   return (
     <section className="lp-list-page">
@@ -34,7 +51,7 @@ const LpListPage = () => {
 
       {isLoading && (
         <div className="lp-grid">
-          {Array.from({ length: 15 }).map((_, index) => (
+          {Array.from({ length: 12 }).map((_, index) => (
             <LpCardSkeleton key={index} />
           ))}
         </div>
@@ -43,11 +60,24 @@ const LpListPage = () => {
       {isError && <LoadingError onRetry={() => refetch()} />}
 
       {!isLoading && !isError && (
-        <div className="lp-grid">
-          {lpList.map((lp: Lp) => (
-            <LpCard key={lp.id} lp={lp} />
-          ))}
-        </div>
+        <>
+          <div className="lp-grid">
+            {lpList.map((lp: Lp) => (
+              <LpCard key={lp.id} lp={lp} />
+            ))}
+
+            {isFetchingNextPage &&
+              Array.from({ length: 8 }).map((_, index) => (
+                <LpCardSkeleton key={`next-${index}`} />
+              ))}
+          </div>
+
+          <div ref={observerRef} className="infinite-trigger" />
+
+          {!hasNextPage && lpList.length > 0 && (
+            <p className="end-message">마지막 LP입니다.</p>
+          )}
+        </>
       )}
     </section>
   );

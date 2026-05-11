@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteLp, likeLp } from "../api/lp";
 import LoadingError from "../components/common/LoadingError";
+import LpCommentSection from "../components/lp/LpCommentSection";
 import { useLpDetail } from "../hooks/useLpDetail";
 import "../styles/LpPage.css";
 
@@ -40,7 +41,7 @@ const LpDetailPage = () => {
     );
   }
 
-  if (isError || !lp) {
+  if (isError || !lp || !lpid) {
     return <LoadingError onRetry={() => refetch()} />;
   }
 
@@ -97,6 +98,8 @@ const LpDetailPage = () => {
           💗 {lp.likes?.length ?? 0}
         </button>
       </article>
+
+      <LpCommentSection lpid={lpid} />
     </section>
   );
 };
