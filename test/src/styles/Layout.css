@@ -1,0 +1,183 @@
+/* src/styles/Layout.css */
+.app-layout {
+  min-height: 100vh;
+  background-color: #000;
+}
+
+.main-header {
+  height: 86px;
+  background-color: #181818;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  border-bottom: 1px solid #2b2b2b;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.hamburger-button {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hamburger-button svg {
+  width: 32px;
+  height: 32px;
+}
+
+.header-logo {
+  color: #f82ba7;
+  font-size: 32px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.search-button,
+.header-text-button {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.welcome-text {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.header-login-button,
+.header-signup-button {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.header-signup-button {
+  background-color: #f82ba7;
+  padding: 12px 18px;
+  border-radius: 8px;
+}
+
+.layout-body {
+  display: flex;
+}
+
+.sidebar {
+  width: 210px;
+  min-height: calc(100vh - 86px);
+  background-color: #181818;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 34px 30px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.sidebar-menu a,
+.quit-button {
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.layout-main {
+  flex: 1;
+  min-width: 0;
+  background-color: #000;
+}
+
+.floating-button {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  width: 66px;
+  height: 66px;
+  border: none;
+  border-radius: 50%;
+  background-color: #f82ba7;
+  color: white;
+  font-size: 42px;
+  font-weight: 800;
+  cursor: pointer;
+  z-index: 30;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .main-header {
+    padding: 0 18px;
+  }
+
+  .header-logo {
+    font-size: 26px;
+  }
+
+  .welcome-text {
+    display: none;
+  }
+
+  .header-right {
+    gap: 14px;
+  }
+
+  .header-login-button,
+  .header-signup-button {
+    font-size: 16px;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: -240px;
+    top: 86px;
+    height: calc(100vh - 86px);
+    z-index: 40;
+    transition: left 0.25s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 86px 0 0 0;
+    background: rgba(0, 0, 0, 0.45);
+    border: none;
+    z-index: 35;
+  }
+}
