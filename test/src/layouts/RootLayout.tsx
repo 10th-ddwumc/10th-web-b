@@ -1,13 +1,15 @@
 // src/layouts/RootLayout.tsx
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
+import LpEditorModal from "../components/lp/LpEditorModal"
 import "../styles/Layout.css";
+import "../styles/LpModal.css";
 
 const RootLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const navigate = useNavigate();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
     <div className="app-layout">
@@ -36,10 +38,14 @@ const RootLayout = () => {
       <button
         type="button"
         className="floating-button"
-        onClick={() => navigate("/lp/new")}
+        onClick={() => setIsCreateModalOpen(true)}
       >
-        +
+      +
       </button>
+
+      {isCreateModalOpen && (
+        <LpEditorModal mode="create" onClose={() => setIsCreateModalOpen(false)} />
+      )}
     </div>
   );
 };

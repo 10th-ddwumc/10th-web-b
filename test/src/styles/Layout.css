@@ -83,7 +83,9 @@
 
 .sidebar {
   width: 210px;
-  min-height: calc(100vh - 86px);
+  height: calc(100vh - 86px);
+  position: sticky;
+  top: 86px;
   background-color: #181818;
   display: flex;
   flex-direction: column;
@@ -91,6 +93,12 @@
   padding: 34px 30px;
   box-sizing: border-box;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.quit-button {
+  margin-top: auto;
+  margin-bottom: 0;
 }
 
 .sidebar-menu {
@@ -131,6 +139,12 @@
   font-weight: 800;
   cursor: pointer;
   z-index: 30;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
 }
 
 .sidebar-overlay {
@@ -180,4 +194,53 @@
     border: none;
     z-index: 35;
   }
+}
+
+.confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-modal {
+  background-color: #2a2b32;
+  color: white;
+  border-radius: 14px;
+  padding: 34px;
+  min-width: 320px;
+  text-align: center;
+}
+
+.confirm-modal p {
+  margin: 0 0 24px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.confirm-modal div {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.confirm-modal button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.confirm-modal button:first-child {
+  background-color: #f82ba7;
+  color: white;
+}
+
+.confirm-modal button:last-child {
+  background-color: #a9b2bf;
+  color: white;
 }

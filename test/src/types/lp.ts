@@ -66,3 +66,19 @@ export type LpCommentListResponse = {
     hasNext: boolean;
   };
 };
+
+export type CreateLpRequest = {
+  title: string;
+  content: string;
+  thumbnail: string;
+  tags: string[];
+  published: boolean;
+};
+
+export type UpdateLpRequest = {
+  title: string;
+  content: string;
+  thumbnail?: string;
+  tags: string[];
+  published?: boolean;
+};

@@ -5,10 +5,16 @@ export const getRefreshToken = () => localStorage.getItem("refreshToken");
 
 export const getUserName = () => localStorage.getItem("userName");
 
+export const getUserId = () => {
+  const value = localStorage.getItem("userId");
+  return value ? Number(value) : null;
+};
+
 export const setTokens = (
   accessToken: string,
   refreshToken?: string,
-  userName?: string
+  userName?: string,
+  userId?: number
 ) => {
   localStorage.setItem("accessToken", accessToken);
 
@@ -20,6 +26,10 @@ export const setTokens = (
     localStorage.setItem("userName", userName);
   }
 
+  if (userId) {
+    localStorage.setItem("userId", String(userId));
+  }
+
   window.dispatchEvent(new Event("auth-change"));
 };
 
@@ -27,6 +37,7 @@ export const clearTokens = () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
   localStorage.removeItem("userName");
+  localStorage.removeItem("userId");
 
   window.dispatchEvent(new Event("auth-change"));
 };

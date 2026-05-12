@@ -1,5 +1,6 @@
 // src/pages/LoginPage.tsx
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import useForm from "../hooks/useForm";
 import { login, redirectToGoogleLogin } from "../api/auth";
 import "../styles/LoginPage.css";
@@ -8,7 +9,11 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = (location.state as { from?: string } | null)?.from ?? "/";
+  const stateFrom = (location.state as { from?: string } | null)?.from;
+  const from =
+    stateFrom && stateFrom !== "/login" && !stateFrom.includes("undefined")
+      ? stateFrom
+      : "/";
 
   const { values, touched, errors, isValid, handleChange, handleBlur } =
     useForm({
@@ -16,21 +21,24 @@ const LoginPage = () => {
       password: "",
     });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (result) => {
+      console.log("로그인 성공:", result);
+      navigate(from, { replace: true });
+    },
+    onError: (error) => {
+      console.error("로그인 실패:", error);
+      alert("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
+    },
+  });
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!isValid) return;
 
-    try {
-      const result = await login(values);
-
-      console.log("로그인 성공:", result);
-
-      navigate(from, { replace: true });
-    } catch (error) {
-      console.error("로그인 실패:", error);
-      alert("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
-    }
+    loginMutation.mutate(values);
   };
 
   return (
@@ -95,9 +103,9 @@ const LoginPage = () => {
           <button
             type="submit"
             className="login-submit-button"
-            disabled={!isValid}
+            disabled={!isValid || loginMutation.isPending}
           >
-            로그인
+            {loginMutation.isPending ? "로그인 중..." : "로그인"}
           </button>
         </form>
       </section>

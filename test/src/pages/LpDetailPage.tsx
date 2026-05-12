@@ -1,9 +1,11 @@
 // src/pages/LpDetailPage.tsx
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteLp, likeLp } from "../api/lp";
 import LoadingError from "../components/common/LoadingError";
 import LpCommentSection from "../components/lp/LpCommentSection";
+import LpEditorModal from "../components/lp/LpEditorModal";
 import { useLpDetail } from "../hooks/useLpDetail";
 import "../styles/LpPage.css";
 
@@ -11,6 +13,8 @@ const LpDetailPage = () => {
   const { lpid } = useParams<{ lpid: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const { data, isLoading, isError, refetch } = useLpDetail(lpid);
 
@@ -63,7 +67,9 @@ const LpDetailPage = () => {
           <h1>{lp.title}</h1>
 
           <div className="detail-actions">
-            <button type="button">✎</button>
+            <button type="button" onClick={() => setIsEditModalOpen(true)}>
+              ✎
+            </button>
             <button
               type="button"
               onClick={() => {
@@ -100,6 +106,14 @@ const LpDetailPage = () => {
       </article>
 
       <LpCommentSection lpid={lpid} />
+
+      {isEditModalOpen && (
+        <LpEditorModal
+          mode="edit"
+          lp={lp}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
     </section>
   );
 };

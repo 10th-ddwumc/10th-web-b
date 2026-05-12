@@ -4,7 +4,6 @@ import RootLayout from "./layouts/RootLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LpListPage from "./pages/LpListPage";
 import LpDetailPage from "./pages/LpDetailPage";
-import NewLpPage from "./pages/NewLpPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import MyPage from "./pages/MyPage";
@@ -27,7 +26,6 @@ const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           { path: "mypage", element: <MyPage /> },
-          { path: "lp/new", element: <NewLpPage /> },
           { path: "lp/:lpid", element: <LpDetailPage /> },
         ],
       },

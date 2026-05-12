@@ -1,6 +1,7 @@
 // src/components/layout/Header.tsx
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { clearTokens, getAccessToken, getUserName } from "../../utils/token";
 import { logout } from "../../api/auth";
 
@@ -28,16 +29,13 @@ const Header = ({ onToggleSidebar }: HeaderProps) => {
     };
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error("로그아웃 실패:", error);
-    } finally {
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+    onSettled: () => {
       clearTokens();
       navigate("/");
-    }
-  };
+    },
+  });
 
   return (
     <header className="main-header">
@@ -83,7 +81,7 @@ const Header = ({ onToggleSidebar }: HeaderProps) => {
             <button
               type="button"
               className="header-text-button"
-              onClick={handleLogout}
+              onClick={() => logoutMutation.mutate()}
             >
               로그아웃
             </button>
