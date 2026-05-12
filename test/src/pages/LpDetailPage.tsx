@@ -2,11 +2,13 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteLp, likeLp } from "../api/lp";
+import { deleteLp, likeLp, unlikeLp } from "../api/lp";
 import LoadingError from "../components/common/LoadingError";
 import LpCommentSection from "../components/lp/LpCommentSection";
 import LpEditorModal from "../components/lp/LpEditorModal";
 import { useLpDetail } from "../hooks/useLpDetail";
+import { getUserId } from "../utils/token";
+import type { LpDetailResponse, LpLike } from "../types/lp";
 import "../styles/LpPage.css";
 
 const LpDetailPage = () => {
@@ -19,10 +21,68 @@ const LpDetailPage = () => {
   const { data, isLoading, isError, refetch } = useLpDetail(lpid);
 
   const lp = data?.data;
+  const myUserId = getUserId();
+
+  const isLiked =
+    !!myUserId && !!lp?.likes?.some((like) => like.userId === myUserId);
 
   const likeMutation = useMutation({
-    mutationFn: () => likeLp(lpid!),
-    onSuccess: () => {
+    mutationFn: () => {
+      if (!lpid) {
+        throw new Error("LP ID가 없습니다.");
+      }
+
+      return isLiked ? unlikeLp(lpid) : likeLp(lpid);
+    },
+
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["lp", lpid] });
+
+      const previousLp = queryClient.getQueryData<LpDetailResponse>([
+        "lp",
+        lpid,
+      ]);
+
+      queryClient.setQueryData<LpDetailResponse>(["lp", lpid], (oldData) => {
+        if (!oldData?.data) return oldData;
+
+        const currentLikes = oldData.data.likes ?? [];
+        const alreadyLiked = currentLikes.some(
+          (like: LpLike) => like.userId === myUserId
+        );
+
+        const nextLikes = alreadyLiked
+          ? currentLikes.filter((like: LpLike) => like.userId !== myUserId)
+          : [
+              ...currentLikes,
+              {
+                id: Date.now(),
+                userId: myUserId ?? -1,
+                lpId: Number(lpid),
+              },
+            ];
+
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            likes: nextLikes,
+          },
+        };
+      });
+
+      return { previousLp };
+    },
+
+    onError: (_error, _variables, context) => {
+      if (context?.previousLp) {
+        queryClient.setQueryData(["lp", lpid], context.previousLp);
+      }
+
+      alert("좋아요 처리에 실패했습니다.");
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["lp", lpid] });
       queryClient.invalidateQueries({ queryKey: ["lps"] });
     },
@@ -98,10 +158,11 @@ const LpDetailPage = () => {
 
         <button
           type="button"
-          className="detail-like-button"
+          className={`detail-like-button ${isLiked ? "liked" : ""}`}
+          disabled={likeMutation.isPending}
           onClick={() => likeMutation.mutate()}
         >
-          💗 {lp.likes?.length ?? 0}
+          {isLiked ? "💗" : "♡"} {lp.likes?.length ?? 0}
         </button>
       </article>
 

@@ -55,7 +55,12 @@ export const deleteLp = async (lpid: string) => {
 };
 
 export const likeLp = async (lpid: string) => {
-  const response = await axiosInstance.post(`/lps/${lpid}/like`);
+  const response = await axiosInstance.post(`/lps/${lpid}/likes`);
+  return response.data;
+};
+
+export const unlikeLp = async (lpid: string) => {
+  const response = await axiosInstance.delete(`/lps/${lpid}/likes`);
   return response.data;
 };
 
@@ -120,4 +125,4 @@ export const deleteLpComment = async ({
   );
 
   return response.data;
-};  
+};
