@@ -635,3 +635,12 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.lp-detail-page {
+  cursor: pointer;
+}
+
+.lp-detail-card,
+.comment-section {
+  cursor: default;
+}

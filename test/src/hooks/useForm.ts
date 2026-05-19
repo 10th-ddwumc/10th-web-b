@@ -36,9 +36,9 @@ const useForm = (initialValues: LoginValues) => {
   const errors = validateLogin(values);
 
   const isValid =
-    values.email.length > 0 &&
-    values.password.length >= 8 &&
-    Object.keys(errors).length === 0;
+    Object.keys(errors).length === 0 &&
+    values.email.trim() !== "" &&
+    values.password.trim() !== "";
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;

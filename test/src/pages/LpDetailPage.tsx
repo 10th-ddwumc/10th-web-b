@@ -28,10 +28,7 @@ const LpDetailPage = () => {
 
   const likeMutation = useMutation({
     mutationFn: () => {
-      if (!lpid) {
-        throw new Error("LP ID가 없습니다.");
-      }
-
+      if (!lpid) throw new Error("LP ID가 없습니다.");
       return isLiked ? unlikeLp(lpid) : likeLp(lpid);
     },
 
@@ -110,8 +107,14 @@ const LpDetailPage = () => {
   }
 
   return (
-    <section className="lp-detail-page">
-      <article className="lp-detail-card">
+    <section
+      className="lp-detail-page"
+      onClick={() => navigate(-1)}
+    >
+      <article
+        className="lp-detail-card"
+        onClick={(event) => event.stopPropagation()}
+      >
         <div className="detail-top">
           <div className="author-box">
             <div className="author-avatar">💿</div>
@@ -166,7 +169,9 @@ const LpDetailPage = () => {
         </button>
       </article>
 
-      <LpCommentSection lpid={lpid} />
+      <div onClick={(event) => event.stopPropagation()}>
+        <LpCommentSection lpid={lpid} />
+      </div>
 
       {isEditModalOpen && (
         <LpEditorModal

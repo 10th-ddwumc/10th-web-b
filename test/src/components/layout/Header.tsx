@@ -69,7 +69,11 @@ const Header = ({ onToggleSidebar }: HeaderProps) => {
       </div>
 
       <div className="header-right">
-        <button type="button" className="search-button">
+        <button 
+          type="button" 
+          className="search-button"
+          onClick={() => navigate("/search")}
+        >
           🔍
         </button>
 

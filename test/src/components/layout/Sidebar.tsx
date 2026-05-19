@@ -35,7 +35,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     <>
       <aside className={`sidebar ${isOpen ? "open" : ""}`}>
         <nav className="sidebar-menu">
-          <Link to="/" onClick={onClose}>
+          <Link to="/search" onClick={onClose}>
             🔍 찾기
           </Link>
           <Link to="/mypage" onClick={onClose}>

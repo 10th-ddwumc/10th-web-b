@@ -9,6 +9,7 @@ import SignupPage from "./pages/SignupPage";
 import MyPage from "./pages/MyPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import GoogleCallbackPage from "./pages/GoogleCallbackPage";
+import SearchPage from "./pages/SearchPage";
 import "./App.css";
 
 const router = createBrowserRouter([
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
     children: [
       { index: true, element: <LpListPage /> },
+      { path: "search", element: <SearchPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "v1/auth/google/callback", element: <GoogleCallbackPage /> },
