@@ -2,18 +2,18 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
-import { useState } from "react";
+import { useSidebar } from "../hooks/useSidebar";
 
 const HomeLayout = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, open, close } = useSidebar();
 
   return (
     <div className="h-screen flex flex-col">
       
-      <Navbar onMenuClick={() => setIsOpen(true)} />
+      <Navbar onMenuClick={open} />
 
       <div className="flex flex-1 overflow-hidden">    
-        <Sidebar open={isOpen} onClose={() => setIsOpen(false)} />
+        <Sidebar open={isOpen} onClose={close} />
         <main className="flex-1 p-4 overflow-auto">
           <Outlet />
         </main>

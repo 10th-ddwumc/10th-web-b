@@ -61,24 +61,34 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 
   return (
     <>
-      {/* Desktop Sidebar */}
+      {/* Desktop Sidebar (Static) */}
       <aside className="h-full w-64 bg-blue-600 p-6 hidden md:flex flex-col border-r border-white/10 shrink-0">
         <SidebarContent />
       </aside>
 
-      {/* Mobile Sidebar */}
-      {open && (
-        <>
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden" onClick={onClose} />
-          <aside className="fixed left-0 top-0 w-72 h-full bg-blue-600 z-50 flex flex-col p-6 animate-in slide-in-from-left duration-300 md:hidden">
-            <div className="flex justify-between items-center mb-8">
-              <h1 className="text-2xl font-black text-white">SYOON.</h1>
-              <button onClick={onClose} className="text-white/70 hover:text-white"><X size={24} /></button>
-            </div>
-            <SidebarContent />
-          </aside>
-        </>
-      )}
+      {/* Mobile Sidebar (Animated) */}
+      {/* Backdrop */}
+      <div 
+        className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300 ${
+          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`} 
+        onClick={onClose} 
+      />
+      
+      {/* Sidebar Panel */}
+      <aside 
+        className={`fixed left-0 top-0 w-72 h-full bg-blue-600 z-50 flex flex-col p-6 transition-transform duration-300 ease-in-out md:hidden ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-2xl font-black text-white">SYOON.</h1>
+          <button onClick={onClose} className="text-white/70 hover:text-white transition-colors">
+            <X size={24} />
+          </button>
+        </div>
+        <SidebarContent />
+      </aside>
 
       {/* 탈퇴 확인 모달 */}
       {showWithdrawModal && (
