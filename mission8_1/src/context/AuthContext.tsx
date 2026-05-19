@@ -34,60 +34,55 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         getRefreshTokenFromStorage() ?? null,
     );
 
-    const handleSetAccessToken = useCallback((token: string | null) => {
+    const updateToken = useCallback((
+        type: 'access' | 'refresh', 
+        token: string | null,
+        storageOps: { set: (v: any) => void, remove: () => void }
+    ) => {
         if (token) {
-            setAccessTokeninStorage(token);
+            storageOps.set(token);
         } else {
-            removeAccessTokenFromStorage();
+            storageOps.remove();
         }
-        setAccessToken(token);
-    }, [setAccessTokeninStorage, removeAccessTokenFromStorage]);
+        if (type === 'access') setAccessToken(token);
+        else setRefreshToken(token);
+    }, []);
+
+    const handleSetAccessToken = useCallback((token: string | null) => {
+        updateToken('access', token, { set: setAccessTokeninStorage, remove: removeAccessTokenFromStorage });
+    }, [updateToken, setAccessTokeninStorage, removeAccessTokenFromStorage]);
 
     const handleSetRefreshToken = useCallback((token: string | null) => {
-        if (token) {
-            setRefreshTokeninStorage(token);
-        } else {
-            removeRefreshTokenFromStorage();
-        }
-        setRefreshToken(token);
-    }, [setRefreshTokeninStorage, removeRefreshTokenFromStorage]);
+        updateToken('refresh', token, { set: setRefreshTokeninStorage, remove: removeRefreshTokenFromStorage });
+    }, [updateToken, setRefreshTokeninStorage, removeRefreshTokenFromStorage]);
 
     // 다른 탭에서 로그아웃/로그인 시 상태 동기화
     useEffect(() => {
         const handleStorageChange = (event: StorageEvent) => {
-            if (event.key === LOCAL_STORAGE_KEY.accessToken) {
-                try {
-                    let newToken = null;
-                    if (event.newValue) {
-                        try {
-                            newToken = JSON.parse(event.newValue);
-                        } catch {
-                            newToken = event.newValue;
-                        }
+            const keys = {
+                [LOCAL_STORAGE_KEY.accessToken]: setAccessToken,
+                [LOCAL_STORAGE_KEY.refreshToken]: setRefreshToken,
+            };
+
+            const updateAction = keys[event.key as keyof typeof keys];
+            if (!updateAction) return;
+
+            try {
+                let newToken = null;
+                if (event.newValue) {
+                    try {
+                        newToken = JSON.parse(event.newValue);
+                    } catch {
+                        newToken = event.newValue;
                     }
-                    setAccessToken(newToken);
-                    if (!newToken) {
-                        // 로그아웃 된 경우 메인으로 리다이렉트 (보안 강화)
-                        window.location.href = "/";
-                    }
-                } catch (error) {
-                    console.error("Storage sync error:", error);
                 }
-            }
-            if (event.key === LOCAL_STORAGE_KEY.refreshToken) {
-                try {
-                    let newToken = null;
-                    if (event.newValue) {
-                        try {
-                            newToken = JSON.parse(event.newValue);
-                        } catch {
-                            newToken = event.newValue;
-                        }
-                    }
-                    setRefreshToken(newToken);
-                } catch (error) {
-                    console.error("Storage sync error:", error);
+                updateAction(newToken);
+
+                if (event.key === LOCAL_STORAGE_KEY.accessToken && !newToken) {
+                    window.location.href = "/";
                 }
+            } catch (error) {
+                console.error(`Storage sync error for ${event.key}:`, error);
             }
         };
 

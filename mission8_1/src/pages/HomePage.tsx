@@ -3,10 +3,10 @@ import PostModal from "../components/PostModal";
 import useGetCatList from "../hooks/useGetCatList";
 import { useState, useEffect, useRef } from "react";
 import type { Cat } from "../types/cat";
-import CatCardSkeleton from "../components/CatCardSkeleton";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useDebounce } from "../hooks/useDebounce";
+import { useThrottle } from "../hooks/useThrottle";
 import { Search } from "lucide-react";
 
 const HomePage = () => {
@@ -20,22 +20,17 @@ const HomePage = () => {
     const debouncedSearch = useDebounce(searchInput, 300); 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // URL 파라미터가 변경될 때 입력창 상태 동기화 (뒤로가기/검색 클릭 대응)
+    // URL 파라미터와 입력창 상태 동기화 통합 관리
     useEffect(() => {
         const querySearch = searchParams.get("search") || "";
-        if (searchInput !== querySearch) {
-            setSearchInput(querySearch);
+        if (searchInput !== querySearch) setSearchInput(querySearch);
+        
+        // debouncedSearch가 변경될 때 URL 업데이트
+        if (debouncedSearch !== querySearch) {
+            const nextParams = debouncedSearch ? { search: debouncedSearch } : {};
+            setSearchParams(nextParams, { replace: true });
         }
-    }, [searchParams]); 
-    
-    // 검색어가 변경될 때 URL 파라미터 업데이트
-    useEffect(() => {
-        if (debouncedSearch) {
-            setSearchParams({ search: debouncedSearch }, { replace: true });
-        } else {
-            setSearchParams({}, { replace: true });
-        }
-    }, [debouncedSearch, setSearchParams]);
+    }, [searchParams, debouncedSearch, setSearchParams]); 
 
     // 하나의 훅으로 검색과 전체 목록 통합 관리
     const { 
@@ -55,22 +50,42 @@ const HomePage = () => {
     const isSearching = !!debouncedSearch.trim();
 
     const observerElem = useRef<HTMLDivElement | null>(null);
+    const [fetchCount, setFetchCount] = useState(0);
+    const throttledFetchCount = useThrottle(fetchCount, 3000);
+    const isFetchingRef = useRef(false);
 
     useEffect(() => {
-        if (!observerElem.current || !hasNextPage || isFetchingNextPage) return;
+        if (!observerElem.current || !hasNextPage) return;
 
         const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    fetchNextPage();
+            ([entry]) => {
+                if (entry.isIntersecting && !isFetchingNextPage && !isFetchingRef.current) {
+                    setFetchCount(prev => prev + 1);
                 }
             },
-            { threshold: 1.0 }
+            { threshold: 0.1 }
         );
 
         observer.observe(observerElem.current);
         return () => observer.disconnect();
-    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+    }, [hasNextPage, isFetchingNextPage]);
+
+    // 쓰로틀링된 카운터가 변경될 때만 데이터 요청 수행 (최소 3초 간격 보장)
+    useEffect(() => {
+        const executeFetch = async () => {
+            if (throttledFetchCount > 0 && hasNextPage && !isFetchingNextPage && !isFetchingRef.current) {
+                try {
+                    isFetchingRef.current = true;
+                    console.log(`Throttled Fetch: ${throttledFetchCount}번째 요청 실행 (3초 주기 제어)`);
+                    await fetchNextPage();
+                } finally {
+                    isFetchingRef.current = false;
+                }
+            }
+        };
+
+        executeFetch();
+    }, [throttledFetchCount]); 
 
     const cats: Cat[] = data?.pages.flatMap(page => page.data.data) ?? [];
 
@@ -127,14 +142,6 @@ const HomePage = () => {
                 </p>
             )}
 
-            {isLoading && (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-                    {Array.from({ length: 8 }).map((_, i) => (
-                        <CatCardSkeleton key={`loading-${i}`} />
-                    ))}
-                </div>
-            )}
-
             {!isLoading && cats.length === 0 && (
                 <div className="text-center py-20 text-gray-500">
                     검색 결과가 없고영 🐈
@@ -142,18 +149,27 @@ const HomePage = () => {
             )}
 
              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {cats.map((cat: Cat) => (
+                {cats.map((cat: Cat, index) => (
                   <Link
                     key={cat.id}
                     to={`/cat/${cat.id}`}
-                    className="group relative border rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                    className="group relative border rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-gray-50"
                   >
-                    <div className="w-full h-64 overflow-hidden bg-gray-100">
-                      <img
-                        src={cat.thumbnail}
-                        alt={cat.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
+                    <div className="w-full h-64 overflow-hidden bg-gray-200 flex items-center justify-center">
+                      {cat.thumbnail ? (
+                        <img
+                          src={cat.thumbnail}
+                          alt={cat.title}
+                          loading={index < 4 ? "eager" : "lazy"}
+                          decoding="async"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://placehold.co/400x600?text=No+Image';
+                          }}
+                        />
+                      ) : (
+                        <div className="text-gray-400 font-bold">No Image 🐈</div>
+                      )}
                     </div>
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
                       <h3 className="font-bold text-lg line-clamp-2 mb-1">
@@ -171,14 +187,6 @@ const HomePage = () => {
                   </Link>
                 ))}
             </div>
-
-            {isFetchingNextPage && (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                        <CatCardSkeleton key={`fetching-${i}`} />
-                    ))}
-                </div>
-            )}
 
             <div ref={observerElem} className="h-10 w-full" />
         </div>

@@ -41,6 +41,15 @@ axiosInstance.interceptors.response.use(
     async (error) => {
         const originalRequest: CustomInternalAxiosRequestConfig = error.config;
 
+        // 세션 종료 및 로그인 페이지 이동 처리 함수
+        const handleSessionExpired = () => {
+            localStorage.removeItem(LOCAL_STORAGE_KEY.accessToken);
+            localStorage.removeItem(LOCAL_STORAGE_KEY.refreshToken);
+            if (window.location.pathname !== "/login") {
+                window.location.href = "/login";
+            }
+        };
+
         // 401에러면서, 아직 재시도 하지 않은 요청인 경우 처리
         if (
             error.response &&
@@ -53,20 +62,14 @@ axiosInstance.interceptors.response.use(
             if (refreshTokenRaw) {
                 try {
                     refreshToken = JSON.parse(refreshTokenRaw);
-                } catch (e) {
+                } catch {
                     refreshToken = refreshTokenRaw;
                 }
             }
 
             // 리프레시 토큰이 없거나, 리프레시 요청 자체가 401 에러를 반환하는 경우
             if (!refreshToken || originalRequest.url === "/v1/auth/refresh") {
-                localStorage.removeItem(LOCAL_STORAGE_KEY.accessToken);
-                localStorage.removeItem(LOCAL_STORAGE_KEY.refreshToken);
-
-                // 무한 루프 방지: 현재 페이지가 로그인 페이지가 아닐 때만 리다이렉트
-                if (window.location.pathname !== "/login") {
-                    window.location.href = "/login";
-                }
+                handleSessionExpired();
                 return Promise.reject(error);
             }
 
@@ -88,12 +91,7 @@ axiosInstance.interceptors.response.use(
                         
                         return newAccessToken;
                     } catch (refreshError) {
-                        localStorage.removeItem(LOCAL_STORAGE_KEY.accessToken);
-                        localStorage.removeItem(LOCAL_STORAGE_KEY.refreshToken);
-
-                        if (window.location.pathname !== "/login") {
-                            window.location.href = "/login";
-                        }
+                        handleSessionExpired();
                         throw refreshError;
                     } finally {
                         refreshPromise = null;
